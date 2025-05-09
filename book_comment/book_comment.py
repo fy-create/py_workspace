@@ -285,12 +285,15 @@ async def get_data_show(request):
     public_files = glob.glob('./public/*')
     file2zip("pic_archive.zip",public_files)
     
+    # 3. 返回文件流（避免阻塞）
     return await response.file(
-        "./public/books_sentiment_analysis.png",
-        filename="books_sentiment_analysis.png",  # 可选：自定义下载文件名
+        "pic_archive.zip",
+        filename="pic_archive.zip",  # 更友好的文件名
         headers={
-            "Content-Disposition": "attachment; filename=books_sentiment_analysis.png"  # 强制下载
-        },
+            "Content-Type": "application/zip",
+            "Content-Disposition": 'attachment; filename="pic_archive.zip"',
+            "Content-Length": str(os.path.getsize("pic_archive.zip"))  # 明确文件大小
+        }
     )
 
 
